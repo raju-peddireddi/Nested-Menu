@@ -22,35 +22,61 @@ const SubMenu = (props) => {
   const classes = useStyles()
     const {eachItem} = props
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [nestedAnchorEl, setNestedAnchorEl] = React.useState(null);
+
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+  const handleClose = () => { 
     setAnchorEl(null);
+    setNestedAnchorEl(null)
   };
+
+
+  const handleNestedMenuEnter = (event) => {
+    setNestedAnchorEl(event.currentTarget);
+  };
+
+  const handleNestedMenuLeave = () => {
+    setNestedAnchorEl(null);
+  };
+
+  const handleMenuClose = () => {
+    setNestedAnchorEl(null);
+    
+  };
+
 
   return (
     <div className="sub-container" >
-         <Checkbox />
+         <Checkbox fontSize='small'/>
       <Button
         className={`course-button ${classes.menuItem}`}
         id="basic-button"
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
-       
-        sx={{fontSize: '20px', color: 'black', display:'flex', justifyContent: 'space-between' }}
+        // onClick={handleClick}
+
+        onMouseEnter={handleNestedMenuEnter}
+
+        sx={{fontSize: '16px', color: 'black', display:'flex', justifyContent: 'space-between' }}
         // className="course-button"
       >
    {eachItem.course}{eachItem.versions.length !== 0 &&  <ArrowRightSharpIcon sx = {{fontWeight:'normal', color: 'grey', align: 'right'}}/>}
       </Button>
       {eachItem.versions.length !== 0 && <Menu
         id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
+        // anchorEl={anchorEl}
+        anchorEl={nestedAnchorEl}
+        open={Boolean(nestedAnchorEl)}
+        // open={open}
+  
+        onMouseLeave={handleNestedMenuLeave}
         onClose={handleClose}
+    
+     
         MenuListProps={{
           "aria-labelledby": "basic-button"
         }}
@@ -64,7 +90,7 @@ const SubMenu = (props) => {
         }}
         sx={{ml: '30px'}}
       >
-        {eachItem.versions.map(eachVersion => <MenuItem onClick={handleClose} sx={{fontSize:'20px', minWidth: '100px' }} className={classes.nestedMenuItem}>{eachVersion}</MenuItem>)}
+        {eachItem.versions.map(eachVersion => <MenuItem   sx={{fontSize:'16px', minWidth: '100px' }} className={classes.nestedMenuItem} onMouseLeave={handleMenuClose}>{eachVersion}</MenuItem>)}
     
       </Menu>}
     </div>
