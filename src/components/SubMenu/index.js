@@ -57,10 +57,10 @@ const SubMenu = (props) => {
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        // onClick={handleClick}
+        onClick={handleClose}
 
         onMouseEnter={handleNestedMenuEnter}
-
+      
         sx={{fontSize: '16px', color: 'black', display:'flex', justifyContent: 'space-between' }}
         // className="course-button"
       >
@@ -88,9 +88,9 @@ const SubMenu = (props) => {
           vertical: "top",
           horizontal: "left"
         }}
-        sx={{ml: '30px'}}
+        sx={{ml: '10px'}}
       >
-        {eachItem.versions.map(eachVersion => <MenuItem   sx={{fontSize:'16px', minWidth: '100px' }} className={classes.nestedMenuItem} onMouseLeave={handleMenuClose}>{eachVersion}</MenuItem>)}
+        {eachItem.versions.map(eachVersion => <MenuItem   nestedAnchorEl = {nestedAnchorEl} open = {Boolean(nestedAnchorEl)}sx={{fontSize:'16px', minWidth: '100px' }} className={classes.nestedMenuItem} onMouseLeave={handleMenuClose}>{eachVersion}</MenuItem>)}
     
       </Menu>}
     </div>
