@@ -1,67 +1,39 @@
 import {useState} from 'react'
-import {makeStyles } from "@material-ui/core/styles";
+import {makeStyles } from "@mui/styles";
 import { Button } from '@mui/material';
 import NestedMenuItem from "material-ui-nested-menu-item";
-import {Checkbox, MenuItem} from "@material-ui/core";
+import Checkbox from '@mui/material/Checkbox';
+import { MenuItem } from '@mui/material';
 import Menu from "@mui/material/Menu";
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import './index.css'
 
 const useStyles = makeStyles(() => ({
-  
-  iosRightIconSubMenu1:{
-    fontSize:"small",
-    position:"fixed",
-    marginTop:"0.2rem",
-    marginLeft:"12.95rem",
+  container:{
+    marginTop: 50
   },
-  iosRightIconSubMenu2:{
-    fontSize:"small",
-    position:"fixed",
-    marginTop:"0.2rem",
-    marginLeft:"10.9rem",
-  },
-  menuPaper1:{
-    minHeight: "44px",
-    "&.MuiMenuItem-root:hover":{
-      backgroundColor: "#DBECF8",
-    },
+  menuItemContainer:{
+    display: 'flex',
 
   },
-  subMenuPaper1:{
-    minHeight: "44px",
-    width:"251px",
-    "&.MuiMenuItem-root:hover":{
-      backgroundColor: "#DBECF8",
-    },
+  mainMenuItem:{
+    minWidth: '180px',
+    display: 'flex',
+    justifyContent: 'space-between !important',
+    paddingLeft: "0px !important"
   },
-  subMenuPaper2:{
-    minHeight: "44px",
-    width:"217px",
-    "&.MuiMenuItem-root:hover":{
-      backgroundColor: "#DBECF8",
-    },
-  },
-  subMenuPaper3:{
-    minHeight: "44px",
-    width:"190px",
-    "&.MuiMenuItem-root:hover":{
-      backgroundColor: "#DBECF8",
-    },
-  },
-  iosRightIcon:{
-    fontSize:"small",
-    position:"relative",
-    marginLeft: '10px'
+  subMenuItem:{
+    minWidth: '180px',
+    display:'flex',
+    justifyContent: 'space-between !important'
   }
 }))
 
 const TopLevelMenu = (props) => {
-  const {data} = props
+  const {listOfMenuItems} = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
   const handleClick = (e) => {
   setAnchorEl(e.currentTarget);
   }
@@ -70,35 +42,54 @@ const TopLevelMenu = (props) => {
 
     
 return (
-  <div>
+  <div className={classes.container}>
     <Button
       variant="contained"
       onClick={handleClick}
   
     >
-      Click Me!
+      Nested Menu!
     </Button>
     <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-      {data.map(eachItem => {
-      if (eachItem.versions.length !== 0){
-      return(
-      <NestedMenuItem
-       leftIcon={<Checkbox/>}
-        label= {eachItem.course}
+        {listOfMenuItems.map(eachItem => {
+          if (eachItem.subFilterValues !== undefined){
+            return(
+             <div className={classes.menuItemContainer}>
+              <Checkbox size='small'/>
+              <NestedMenuItem className={classes.mainMenuItem}
+        label={eachItem.label}
         parentMenuOpen={open}
-       className={classes.menuPaper1}
-       rightIcon={<ArrowForwardIosIcon className={classes.iosRightIcon}/>}
+        rightIcon={<ArrowForwardIosIcon fontSize= 'small' style={{height: 14}}/>}
       >
-        {eachItem.versions.map(each => {
-        return <MenuItem onClick={handleClose} className={classes.menuPaper1}>{each}</MenuItem>}
-        )}
-    
+        {eachItem.subFilterValues.map(each => {
+        if (each.subChildFilterValues !== undefined){
+          return(<NestedMenuItem
+            label={each.label}
+            parentMenuOpen={open}
+            rightIcon={<ArrowForwardIosIcon fontSize= 'small' style={{height: 13}}/>}
+            className={classes.subMenuItem}
+          >
+            <MenuItem onClick={handleClose}>{each.label}</MenuItem>
+          </NestedMenuItem>)
+        }
+        else{
+         return(<MenuItem onClick={handleClose}>{each.label}</MenuItem>)
+
+        }})}
+        
       </NestedMenuItem>
-    )}
-      else{
-        return (<MenuItem className={classes.menuPaper1}>{eachItem.course}</MenuItem>)
+      </div>
+            )
+
+          }
+        else{
+          return(<div className={classes.menuItemContainer}>
+            <Checkbox size='small'/>
+          <MenuItem onClick={handleClose} className={classes.mainMenuItem}>{eachItem.label}</MenuItem>
+          </div>)
+        }
       }
-    })}
+    )}
     </Menu>
   </div>
 
