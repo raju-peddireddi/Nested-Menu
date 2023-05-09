@@ -6,7 +6,6 @@ import Checkbox from '@mui/material/Checkbox';
 import { MenuItem } from '@mui/material';
 import Menu from "@mui/material/Menu";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import './index.css'
 
 const useStyles = makeStyles(() => ({
   container:{
