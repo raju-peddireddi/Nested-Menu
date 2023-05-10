@@ -18,8 +18,16 @@ const useStyles = makeStyles(() => ({
   mainMenuItem:{
     minWidth: '180px',
     display: 'flex',
-    justifyContent: 'space-between !important',
-    paddingLeft: "0px !important"
+    justifyContent: 'space-between !important'
+
+  },
+  mainMenuItemForCheckboxTrue:{
+    display: 'flex',
+    justifyContent: 'space-between !important'
+
+  },
+  forCheckboxTrue:{
+      paddingLeft: "0px !important"
   },
   subMenuItem:{
     minWidth: '180px',
@@ -29,9 +37,10 @@ const useStyles = makeStyles(() => ({
 }))
 
 const TopLevelMenu = (props) => {
-  const {listOfMenuItems} = props
+  const {listOfMenuItems, selectedValue, checkbox, minWidth, text='Static Menu'} = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null);
+  const [value, setMenuValue] = useState('')
   const open = Boolean(anchorEl);
   const handleClick = (e) => {
   setAnchorEl(e.currentTarget);
@@ -39,6 +48,11 @@ const TopLevelMenu = (props) => {
 
   const handleClose = () => setAnchorEl(null);
 
+  const handleMenuItemClick = (item) => {
+    setAnchorEl(null)
+    setMenuValue(item)
+    selectedValue(item)
+  }
     
 return (
   <div className={classes.container}>
@@ -47,15 +61,16 @@ return (
       onClick={handleClick}
   
     >
-      Nested Menu!
+      {text}
     </Button>
     <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         {listOfMenuItems.map(eachItem => {
           if (eachItem.subFilterValues !== undefined){
             return(
              <div className={classes.menuItemContainer}>
-              <Checkbox size='small'/>
-              <NestedMenuItem className={classes.mainMenuItem}
+              {checkbox && <Checkbox size='small'/>}
+              <NestedMenuItem className={`${classes.mainMenuItem} ${checkbox ? classes.forCheckboxTrue : ''}`}
+              style={{minWidth: minWidth}}
         label={eachItem.label}
         parentMenuOpen={open}
         rightIcon={<ArrowForwardIosIcon fontSize= 'small' style={{height: 14}}/>}
@@ -68,11 +83,11 @@ return (
             rightIcon={<ArrowForwardIosIcon fontSize= 'small' style={{height: 13}}/>}
             className={classes.subMenuItem}
           >
-            <MenuItem onClick={handleClose}>{each.label}</MenuItem>
+            <MenuItem onClick={()=> handleMenuItemClick(each.value)} key = {each.value}>{each.label}</MenuItem>
           </NestedMenuItem>)
         }
         else{
-         return(<MenuItem onClick={handleClose}>{each.label}</MenuItem>)
+         return(<MenuItem  style={{minWidth: minWidth }} onClick={() => handleMenuItemClick(each.value)} sx={{width: '100%'}} key = {each.value}>{each.label}</MenuItem>)
 
         }})}
         
@@ -82,9 +97,9 @@ return (
 
           }
         else{
-          return(<div className={classes.menuItemContainer}>
-            <Checkbox size='small'/>
-          <MenuItem onClick={handleClose} className={classes.mainMenuItem}>{eachItem.label}</MenuItem>
+          return(<div className={classes.menuItemContainer} key={eachItem.value}>
+            {checkbox && <Checkbox size='small'/>}
+          <MenuItem onClick={() => handleMenuItemClick(eachItem.value)} className={`${classes.mainMenuItem} ${checkbox ? classes.forCheckboxTrue : ''}`}  >{eachItem.label}</MenuItem>
           </div>)
         }
       }
